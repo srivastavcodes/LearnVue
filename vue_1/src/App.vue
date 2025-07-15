@@ -1,23 +1,17 @@
-<script>
-export default {
-    data() {
-        return {
-            name: "Parth",
-            status: 'pending',
-            tasks: ["Task one", "Task two", "Task three"],
-            link: "https://unsplash.com/photos/a-person-swimming-over-a-coral-reef-with-lots-of-fish-xDQKvPjxtxo"
-        }
-    },
-    methods: {
-        changeStatus() {
-            if (this.status === 'active') {
-                this.status = 'pending'
-            } else if (this.status === 'pending') {
-                this.status = 'inactive'
-            } else {
-                this.status = 'active'
-            }
-        }
+<script setup>
+import {ref} from "vue";
+
+const name = "Parth"
+const status = ref("active")
+const tasks = ["Task one", "Task two", "Task three"]
+
+const changeStatus = () => {
+    if (status.value === 'active') {
+        status.value = 'pending'
+    } else if (status.value === 'pending') {
+        status.value = 'inactive'
+    } else {
+        status.value = 'active'
     }
 }
 </script>
@@ -36,9 +30,6 @@ export default {
     <ul>
         <li v-for="task in tasks" :key="task">{{ task }}</li>
     </ul>
-
-    <br>
-    <a v-bind:href="link">click for image</a>
 
     <br>
     <!--    <button v-on:click="changeStatus">change status</button>-->
