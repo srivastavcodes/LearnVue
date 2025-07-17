@@ -6,7 +6,7 @@ title: {
     },
     subtitle: {
         type: String,
-        default: "Become a Vue Dev"
+        default: "Find Jobs that match your skill-set!"
     }
 })
 </script>
