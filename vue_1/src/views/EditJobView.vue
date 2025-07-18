@@ -1,10 +1,22 @@
 <script setup>
-import {reactive} from "vue";
-import axios from "axios";
-import router from "@/router/index.js";
+import {onMounted, reactive} from "vue";
 import {useToast} from "vue-toastification";
+import {useRoute, useRouter} from "vue-router";
 
-const formData = reactive({
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import axios from "axios";
+
+const route = useRoute()
+const toast = useToast()
+const router = useRouter()
+
+const jobId = route.params.id
+const state = reactive({
+    job: {},
+    isLoading: true
+})
+
+const data = reactive({
     type: 'Full-Time',
     title: '',
     description: '',
@@ -17,25 +29,24 @@ const formData = reactive({
         contactPhone: ''
     }
 })
-const toast = useToast()
 
 const handleSubmit = async () => {
-    const newJob = {
-        type: formData.type,
-        title: formData.title,
-        description: formData.description,
-        salary: formData.salary,
-        location: formData.location,
+    const updatedJob = {
+        type: data.type,
+        title: data.title,
+        description: data.description,
+        salary: data.salary,
+        location: data.location,
         company: {
-            name: formData.company.name,
-            description: formData.company.description,
-            contactEmail: formData.company.contactEmail,
-            contactPhone: formData.company.contactPhone
+            name: data.company.name,
+            description: data.company.description,
+            contactEmail: data.company.contactEmail,
+            contactPhone: data.company.contactPhone
         }
     }
     try {
-        const response = await axios.post("/api/jobs", newJob)
-        toast.success('Job added successfully', {
+        const response = await axios.put(`/api/jobs/${jobId}`, updatedJob)
+        toast.success('Job updated successfully', {
             timeout: 3000
         })
         router.push(`/jobs/${response.data.id}`)
@@ -46,20 +57,49 @@ const handleSubmit = async () => {
         })
     }
 }
+
+const populateForm = (response) => {
+    state.job = response.data
+    // populate the form
+    data.type = state.job.type
+    data.title = state.job.title
+    data.description = state.job.description
+    data.salary = state.job.salary
+    data.location = state.job.location
+
+    data.company.name = state.job.company.name
+    data.company.description = state.job.company.description
+    data.company.contactEmail = state.job.company.contactEmail
+    data.company.contactPhone = state.job.company.contactPhone
+}
+
+onMounted(async () => {
+    try {
+        const response = await axios.get(`/api/jobs/${jobId}`)
+        populateForm(response)
+    } catch (error) {
+        console.error(`Error fetching job ${error}`)
+    } finally {
+        state.isLoading = false
+    }
+})
 </script>
 
 <template>
-    <section class="bg-green-50">
+    <div v-if="state.isLoading" class="text-center text-gray-500 py-6">
+        <PulseLoader/>
+    </div>
+    <section v-else class="bg-green-50">
         <div class="container m-auto max-w-2xl py-24">
             <div
                 class="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
                 <form @submit.prevent="handleSubmit">
-                    <h2 class="text-3xl text-center font-semibold mb-6">Add Job</h2>
+                    <h2 class="text-3xl text-center font-semibold mb-6">Edit Job</h2>
 
                     <div class="mb-4">
                         <label for="type" class="block text-gray-700 font-bold mb-2">Job Type</label>
 
-                        <select v-model="formData.type" id="type" name="type" class="border rounded w-full py-2 px-3" required>
+                        <select v-model="data.type" id="type" name="type" class="border rounded w-full py-2 px-3" required>
                             <option value="Full-Time">Full-Time</option>
                             <option value="Part-Time">Part-Time</option>
                             <option value="Remote">Remote</option>
@@ -70,14 +110,14 @@ const handleSubmit = async () => {
                     <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Job Listing Name</label>
                         <input type="text" id="name" name="name"
-                               v-model="formData.title"
+                               v-model="data.title"
                                class="border rounded w-full py-2 px-3 mb-2"
                                placeholder="eg. Beautiful Apartment In Miami" required/>
                     </div>
                     <div class="mb-4">
                         <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
                         <textarea id="description" name="description"
-                                  v-model="formData.description"
+                                  v-model="data.description"
                                   class="border rounded w-full py-2 px-3"
                                   rows="4" placeholder="Add any job duties, expectations, requirements, etc"
                         ></textarea>
@@ -85,7 +125,7 @@ const handleSubmit = async () => {
 
                     <div class="mb-4">
                         <label for="type" class="block text-gray-700 font-bold mb-2">Salary</label>
-                        <select v-model="formData.salary" id="salary"
+                        <select v-model="data.salary" id="salary"
                                 name="salary" class="border rounded w-full py-2 px-3" required
                         >
                             <option value="Under $50K">under $50K</option>
@@ -105,7 +145,7 @@ const handleSubmit = async () => {
                     <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Location</label>
                         <input type="text" id="location" name="location"
-                               v-model="formData.location"
+                               v-model="data.location"
                                class="border rounded w-full py-2 px-3 mb-2" placeholder="Company Location" required/>
                     </div>
 
@@ -114,14 +154,14 @@ const handleSubmit = async () => {
                     <div class="mb-4">
                         <label for="company" class="block text-gray-700 font-bold mb-2">Company Name</label>
                         <input type="text" id="company" name="company"
-                               v-model="formData.company.name"
+                               v-model="data.company.name"
                                class="border rounded w-full py-2 px-3" placeholder="Company Name"/>
                     </div>
 
                     <div class="mb-4">
                         <label for="company_description" class="block text-gray-700 font-bold mb-2">Company Description</label>
                         <textarea id="company_description" name="company_description"
-                                  v-model="formData.company.description"
+                                  v-model="data.company.description"
                                   class="border rounded w-full py-2 px-3" rows="4" placeholder="What does your company do?"
                         ></textarea>
                     </div>
@@ -129,14 +169,14 @@ const handleSubmit = async () => {
                     <div class="mb-4">
                         <label for="contact_email" class="block text-gray-700 font-bold mb-2">Contact Email</label>
                         <input type="email" id="contact_email" name="contact_email"
-                               v-model="formData.company.contactEmail"
+                               v-model="data.company.contactEmail"
                                class="border rounded w-full py-2 px-3" placeholder="Email address for applicants" required
                         />
                     </div>
                     <div class="mb-4">
                         <label for="contact_phone" class="block text-gray-700 font-bold mb-2">Contact Phone</label>
                         <input type="tel" id="contact_phone" name="contact_phone"
-                               v-model="formData.company.contactPhone"
+                               v-model="data.company.contactPhone"
                                class="border rounded w-full py-2 px-3" placeholder="Optional phone for applicants"
                         />
                     </div>
@@ -145,7 +185,7 @@ const handleSubmit = async () => {
                         <button
                             class="bg-green-500 hover:bg-green-600 text-white font-bold
                             py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline" type="submit"
-                        >Add Job
+                        >Update Job
                         </button>
                     </div>
                 </form>
