@@ -38,7 +38,7 @@ const isActiveLink = (routePath) => {
 
                             <RouterLink
                                 to="/jobs/add"
-                                :class="[isActiveLink('/jobs/adds') ? 'bg-green-900' :'hover:bg-gray-900 hover:text-white',
+                                :class="[isActiveLink('/jobs/add') ? 'bg-green-900' :'hover:bg-gray-900 hover:text-white',
                                 'text-white', 'rounded-md', 'px-3', 'py-2']"
                             >Add Job
                             </RouterLink>
