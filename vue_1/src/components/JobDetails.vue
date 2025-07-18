@@ -1,16 +1,37 @@
 <script setup>
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {onMounted, reactive} from "vue";
-import axios from "axios";
+import {useToast} from "vue-toastification";
+
 import BackButton from "@/components/BackButton.vue";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import axios from "axios";
 
 const route = useRoute()
-const jobId = route.params.id
+const router = useRouter()
+const toast = useToast()
 
+const jobId = route.params.id
 const state = reactive({
     job: {},
     isLoading: true
 })
+
+const deleteJob = async () => {
+    try {
+        await axios.delete(`/api/jobs/${jobId}`)
+        await router.push('/jobs')
+        toast.success("Job deleted successfully", {
+            timeout: 3000
+        })
+    } catch (error) {
+        console.log(`Error deleting job ${error}`)
+        toast.error("Job could not be deleted", {
+            timeout: 3000
+        })
+    }
+}
+
 onMounted(async () => {
     try {
         const response = await axios.get(`/api/jobs/${jobId}`)
@@ -25,10 +46,13 @@ onMounted(async () => {
 
 <template>
     <BackButton/>
-    <section v-if="!state.isLoading" class="bg-green-50">
+    <div v-if="state.isLoading" class="text-center text-gray-500 py-6">
+        <PulseLoader/>
+    </div>
+    <section v-else class="bg-green-50">
         <div class="container m-auto py-10 px-6">
-            <div class="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">
-                <main>
+            <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-6">
+                <main class="md:col-span-2">
                     <div class="bg-white p-6 rounded-lg shadow-md text-center md:text-left">
                         <div class="text-gray-500 mb-4">{{ state.job.type }}</div>
                         <h1 class="text-3xl font-bold mb-4">{{ state.job.title }}</h1>
@@ -55,7 +79,7 @@ onMounted(async () => {
                 </main>
 
                 <!-- Sidebar -->
-                <aside>
+                <aside class="md:col-span-1">
                     <!-- Company Info -->
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold mb-6">Company Info</h3>
@@ -85,6 +109,7 @@ onMounted(async () => {
                         >Edit Job
                         </RouterLink>
                         <button
+                            @click="deleteJob"
                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-2
                             px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block">
                             Delete Job
@@ -94,8 +119,4 @@ onMounted(async () => {
             </div>
         </div>
     </section>
-
-    <div v-else class="text-center text-gray-500 py-6">
-        <PulseLoader/>
-    </div>
 </template>

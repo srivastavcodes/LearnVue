@@ -1,6 +1,8 @@
 <script setup>
-import JobListingCard from "@/components/JobListingCard.vue";
 import {onMounted, reactive} from "vue";
+
+import JobListingCard from "@/components/JobListingCard.vue";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import axios from "axios";
 
 defineProps({

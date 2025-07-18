@@ -35,11 +35,15 @@ const handleSubmit = async () => {
     }
     try {
         const response = await axios.post("/api/jobs", newJob)
-        toast.success('Job added successfully')
+        toast.success('Job added successfully', {
+            timeout: 3000
+        })
         await router.push(`/jobs/${response.data.id}`)
     } catch (error) {
         console.log(`Error posting newJob ${error}`)
-        toast.error('Job could not be added')
+        toast.error('Job could not be added', {
+            timeout: 3000
+        })
     }
 }
 </script>
