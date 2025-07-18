@@ -33,7 +33,7 @@ onMounted(async () => {
         const data = await response.json()
         tasks.value = data.map((task) => task.title)
     } catch (error) {
-        console.log("Error fetching api: ", error)
+        console.log(`Error fetching api: ${error}`)
     }
 })
 </script>
