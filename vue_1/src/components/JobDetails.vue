@@ -2,6 +2,7 @@
 import {useRoute} from "vue-router";
 import {onMounted, reactive} from "vue";
 import axios from "axios";
+import BackButton from "@/components/BackButton.vue";
 
 const route = useRoute()
 const jobId = route.params.id
@@ -12,7 +13,7 @@ const state = reactive({
 })
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:4000/jobs/${jobId}`)
+        const response = await axios.get(`/api/jobs/${jobId}`)
         state.job = response.data
     } catch (error) {
         console.log(`Error fetching job ${error}`)
@@ -23,17 +24,18 @@ onMounted(async () => {
 </script>
 
 <template>
+    <BackButton/>
     <section v-if="!state.isLoading" class="bg-green-50">
         <div class="container m-auto py-10 px-6">
             <div class="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">
                 <main>
                     <div class="bg-white p-6 rounded-lg shadow-md text-center md:text-left">
-                        <div class="text-gray-500 mb-4">{{state.job.type}}</div>
-                        <h1 class="text-3xl font-bold mb-4">{{state.job.title}}</h1>
+                        <div class="text-gray-500 mb-4">{{ state.job.type }}</div>
+                        <h1 class="text-3xl font-bold mb-4">{{ state.job.title }}</h1>
 
                         <div class="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
                             <i class="fa-solid fa-location-dot text-lg text-orange-700 mr-2"></i>
-                            <p class="text-orange-700">{{state.job.location}}</p>
+                            <p class="text-orange-700">{{ state.job.location }}</p>
                         </div>
                     </div>
 
@@ -43,12 +45,12 @@ onMounted(async () => {
                         </h3>
 
                         <p class="mb-4">
-                            {{ state.job.description}}
+                            {{ state.job.description }}
                         </p>
 
                         <h3 class="text-green-800 text-lg font-bold mb-2">Salary</h3>
 
-                        <p class="mb-4">{{state.job.salary}} / Year</p>
+                        <p class="mb-4">{{ state.job.salary }} / Year</p>
                     </div>
                 </main>
 
@@ -58,19 +60,19 @@ onMounted(async () => {
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold mb-6">Company Info</h3>
 
-                        <h2 class="text-2xl">{{state.job.company.name}}</h2>
+                        <h2 class="text-2xl">{{ state.job.company.name }}</h2>
 
-                        <p class="my-2">{{state.job.company.description}}</p>
+                        <p class="my-2">{{ state.job.company.description }}</p>
 
                         <hr class="my-4"/>
 
                         <h3 class="text-xl">Contact Email:</h3>
 
-                        <p class="my-2 bg-green-100 p-2 font-bold">{{state.job.company.contactEmail}}</p>
+                        <p class="my-2 bg-green-100 p-2 font-bold">{{ state.job.company.contactEmail }}</p>
 
                         <h3 class="text-xl">Contact Phone:</h3>
 
-                        <p class="my-2 bg-green-100 p-2 font-bold">{{state.job.company.contactPhone}}</p>
+                        <p class="my-2 bg-green-100 p-2 font-bold">{{ state.job.company.contactPhone }}</p>
                     </div>
 
                     <!-- Manage -->
