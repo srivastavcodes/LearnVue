@@ -58,25 +58,11 @@ const handleSubmit = async () => {
     }
 }
 
-const populateForm = (response) => {
-    state.job = response.data
-    // populate the form
-    data.type = state.job.type
-    data.title = state.job.title
-    data.description = state.job.description
-    data.salary = state.job.salary
-    data.location = state.job.location
-
-    data.company.name = state.job.company.name
-    data.company.description = state.job.company.description
-    data.company.contactEmail = state.job.company.contactEmail
-    data.company.contactPhone = state.job.company.contactPhone
-}
-
 onMounted(async () => {
     try {
         const response = await axios.get(`/api/jobs/${jobId}`)
-        populateForm(response)
+        state.job = response.data
+        Object.assign(data, state.job)
     } catch (error) {
         console.error(`Error fetching job ${error}`)
     } finally {
