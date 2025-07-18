@@ -12,9 +12,11 @@ import Card from "@/components/Card.vue";
                         Browse our Vue jobs and start your career today
                     </p>
                     <!--suppress HtmlUnknownTarget -->
-                    <a href="jobs.html"
-                       class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700"
-                    >Browse Jobs</a>
+                    <RouterLink
+                        to="/jobs"
+                        class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700"
+                    >Browse Jobs
+                    </RouterLink>
                 </Card>
 
                 <Card bg="bg-green-100">
@@ -23,9 +25,11 @@ import Card from "@/components/Card.vue";
                         List your job to find the perfect developer for the role
                     </p>
                     <!--suppress HtmlUnknownTarget -->
-                    <a href="add-job.html"
-                       class="inline-block bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
-                    >Add Job</a>
+                    <RouterLink
+                        to="/jobs/add"
+                        class="inline-block bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+                    >Add Job
+                    </RouterLink>
                 </Card>
             </div>
         </div>

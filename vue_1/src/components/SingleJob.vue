@@ -44,9 +44,11 @@ const smallDescription = computed(() => {
                 <div class="text-orange-700 mb-3">
                     <i class="pi pi-map-marker text-orange-700 mr-1"></i>{{ job.location }}
                 </div>
-                <a :href="'job/' + job.id"
-                   class="h-[36px] bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-center text-sm"
-                >Read More</a>
+                <RouterLink
+                    :to="'job/' + job.id"
+                    class="h-[36px] bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-center text-sm"
+                >Read More
+                </RouterLink>
             </div>
         </div>
     </div>
